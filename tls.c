@@ -117,7 +117,7 @@ static void sigsegv_handler(int sig, siginfo_t *si, void *ctx) {
 int tls_create(unsigned int size) {
     pthread_once(&once_control, init_tls);
     
-    if (size <= 0 || find_tls(pthread_self())) {    
+    if (size == 0 || find_tls(pthread_self())) {    
         return -1;
     }
     
@@ -281,9 +281,9 @@ int tls_clone(pthread_t tid) {
     }
 
     tls_t *t = (tls_t*)malloc(sizeof(tls_t));
-    t->size = t->size;
+    t->size = src->size;
     t->tid = pthread_self();
-    t->page_count = t->page_count;
+    t->page_count = src->page_count;
     t->pages = (page_t**)calloc(t->page_count, sizeof(page_t*));
     
     for(int i = 0; i < t->page_count; i++) {
